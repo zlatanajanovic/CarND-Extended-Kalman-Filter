@@ -151,9 +151,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   } else {
     // Laser updates
-	//ekf_.R_ = R_laser_;
-	//ekf_.H_ = H_laser_;
-    //ekf_.Update(measurement_pack.raw_measurements_);
+	ekf_.R_ = R_laser_;
+	ekf_.H_ = H_laser_;
+    ekf_.Update(measurement_pack.raw_measurements_);
   cout << "measurement = " << measurement_pack.raw_measurements_ << endl;
   }
 
