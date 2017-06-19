@@ -47,7 +47,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   float rho_dot;
   if (fabs(rho) < 0.001) { //avoid dividing by zero
     rho_dot = 0;
-	std::cout << "divide " << endl;
+	std::cout << "divide"<<std::endl;
   } else {
     rho_dot = (x_(0)*x_(2) + x_(1)*x_(3))/rho;
   }
