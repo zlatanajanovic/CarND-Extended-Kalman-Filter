@@ -54,7 +54,14 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd z_pred(3);
   z_pred << rho, phi, rho_dot;
   VectorXd y = z - z_pred;
-  //if (y[1]< 3.14)
+  if (y[1]< -3.14159265359){
+    y[1]=y[1]+6.28318530718;
+	std::cout << "<-pi"<<std::endl;
+  }
+  if (y[1]> 3.14159265359){
+    y[1]=y[1]-6.28318530718;
+    std::cout << ">pi"<<std::endl;
+  }
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
