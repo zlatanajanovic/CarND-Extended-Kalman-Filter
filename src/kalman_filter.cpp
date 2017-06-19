@@ -42,35 +42,35 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  float rho = sqrt(x_(0)*x_(0) + x_(1)*x_(1));
-  float phi = atan2(x_(1), x_(0));
-  float rho_dot;
+  float rho = sqrt(x_[0]*x_[0] + x_[1]*x_[1]);
   if (fabs(rho) < 0.001) { //avoid dividing by zero
-    rho_dot = 0;
-	std::cout << "divide"<<std::endl;
+    std::cout << "divide"<<std::endl;
   } else {
-    rho_dot = (x_(0)*x_(2) + x_(1)*x_(3))/rho;
-  }
-  VectorXd z_pred(3);
-  z_pred << rho, phi, rho_dot;
-  VectorXd y = z - z_pred;
-  if (y[1]< -3.14159265359){
-    y[1]=y[1]+6.28318530718;
-	std::cout << "<-pi"<<std::endl;
-  }
-  if (y[1]> 3.14159265359){
-    y[1]=y[1]-6.28318530718;
-    std::cout << ">pi"<<std::endl;
-  }
-  MatrixXd Ht = H_.transpose();
-  MatrixXd S = H_ * P_ * Ht + R_;
-  MatrixXd Si = S.inverse();
-  MatrixXd PHt = P_ * Ht;
-  MatrixXd K = PHt * Si;
+    float phi = atan2(x_[1], x_[0]);
+    float rho_dot;
+    rho_dot = (x_[0]*x_[2] + x_[1]*x_[3])/rho;
+  	VectorXd z_pred(3);
+    z_pred << rho, phi, rho_dot;
+    VectorXd y = z - z_pred;
+    if (y[1]< -3.14159265359){
+      y[1]=y[1]+6.28318530718;
+  	std::cout << "<-pi"<<std::endl;
+    }
+    if (y[1]> 3.14159265359){
+      y[1]=y[1]-6.28318530718;
+      std::cout << ">pi"<<std::endl;
+    }
+    MatrixXd Ht = H_.transpose();
+    MatrixXd S = H_ * P_ * Ht + R_;
+    MatrixXd Si = S.inverse();
+    MatrixXd PHt = P_ * Ht;
+    MatrixXd K = PHt * Si;
 
-  //new estimate
-  x_ = x_ + (K * y);
-  long x_size = x_.size();
-  MatrixXd I = MatrixXd::Identity(x_size, x_size);
-  P_ = (I - K * H_) * P_;
+    //new estimate
+    x_ = x_ + (K * y);
+    long x_size = x_.size();
+    MatrixXd I = MatrixXd::Identity(x_size, x_size);
+    P_ = (I - K * H_) * P_;
+  }
+  
 }
