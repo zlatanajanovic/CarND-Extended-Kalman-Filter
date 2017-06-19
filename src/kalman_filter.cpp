@@ -41,11 +41,16 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  VectorXd z_pred = sqrt(x_[0]*x_[0]+x_[1]*x_[1]),
-            atan2(x_[1],x_[0]),
-			(x_[0]*x_[2]+x_[1]*x_[3])/sqrt(x_[0]*x_[0]+x_[1]*x_[1]);
-  
-  cout << "z_pred = " << z_pred << endl;
+  float rho = sqrt(x_(0)*x_(0) + x_(1)*x_(1));
+  float phi = atan2(x_(1), x_(0));
+  float rho_dot;
+  if (fabs(rho) < 0.0001) {
+    rho_dot = 0;
+  } else {
+    rho_dot = (x_(0)*x_(2) + x_(1)*x_(3))/rho;
+  }
+  VectorXd z_pred(3);
+  z_pred << rho, phi, rho_dot;
   VectorXd y = z - z_pred;
   //if (y[1]< 3.14)
   MatrixXd Ht = H_.transpose();
