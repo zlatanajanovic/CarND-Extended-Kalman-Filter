@@ -41,9 +41,14 @@ void KalmanFilter::Update(const VectorXd &z) {
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  VectorXd z_pred = H_ * x_;
+  z_pred = MatrixXd(3, 1);
+  z_pred << sqrt(x_[0]*x_[0]+x_[1]*x_[1]),
+            atan2(x_[1],x_[0]),
+			(x_[0]*x_[2]+x_[1]*x_[3])/sqrt(x_[0]*x_[0]+x_[1]*x_[1]);
+  
+  cout << "z_pred = " << z_pred << endl;
   VectorXd y = z - z_pred;
-  y[1]=y[1]-1.57;
+  //if (y[1]< 3.14)
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
